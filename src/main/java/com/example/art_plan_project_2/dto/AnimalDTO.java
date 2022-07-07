@@ -1,6 +1,9 @@
-package com.example.art_plan_project_2.entity;
+package com.example.art_plan_project_2.dto;
 
+import com.example.art_plan_project_2.entity.Animal;
+import com.example.art_plan_project_2.entity.User;
 import com.example.art_plan_project_2.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,20 +15,16 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "animals")
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Animal {
+@Builder
+public class AnimalDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Column(name = "date_of_birth")
+    @JsonProperty("date_of_birth")
     private LocalDate dateOfBirth;
 
     @NotNull
@@ -34,11 +33,15 @@ public class Animal {
 
     @NotBlank
     @Size(min = 2, max = 128, message = "Login should be between 2 and 128 characters")
-    @Column(unique = true, updatable = false)
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
+    public static AnimalDTO from(Animal animal) {
+        return AnimalDTO.builder()
+                .id(animal.getId())
+                .dateOfBirth(animal.getDateOfBirth())
+                .gender(animal.getGender())
+                .name(animal.getName())
+                .build();
+    }
 }

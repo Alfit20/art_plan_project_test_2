@@ -35,6 +35,7 @@ public class User implements UserDetails {
     @Size(min = 3, max = 128, message = "Password should be between 3 and 128 characters")
     private String password;
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("FULL"));
@@ -42,7 +43,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return getLogin();
     }
 
     @Override
