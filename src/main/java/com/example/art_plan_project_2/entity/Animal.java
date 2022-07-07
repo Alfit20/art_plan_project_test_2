@@ -34,7 +34,7 @@ public class Animal {
 
     @NotBlank
     @Size(min = 2, max = 128, message = "Login should be between 2 and 128 characters")
-    @Column(unique = true, updatable = false)
+    @Column(unique = true)
     private String name;
 
     @ManyToOne
