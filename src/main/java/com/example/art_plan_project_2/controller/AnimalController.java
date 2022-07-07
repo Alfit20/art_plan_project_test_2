@@ -2,6 +2,7 @@ package com.example.art_plan_project_2.controller;
 
 import com.example.art_plan_project_2.dto.AnimalDTO;
 import com.example.art_plan_project_2.entity.User;
+import com.example.art_plan_project_2.exception.AnimalNotFoundException;
 import com.example.art_plan_project_2.exception.AnimalWithThatNameAlreadyExists;
 import com.example.art_plan_project_2.service.AnimalService;
 import com.example.art_plan_project_2.validation.ResponseErrorValidation;
@@ -14,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -22,6 +24,21 @@ import java.util.NoSuchElementException;
 public class AnimalController {
     private final AnimalService animalService;
     private final ResponseErrorValidation responseErrorValidation;
+
+    @GetMapping("/all")
+    public ResponseEntity<List<AnimalDTO>> getUserAnimals(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return new ResponseEntity<>(animalService.getAnimals(user), HttpStatus.OK);
+    }
+
+    @GetMapping("{animalId}")
+    public ResponseEntity<Object> getAnimal(@PathVariable(value = "animalId") Long animalId) {
+        try {
+            return new ResponseEntity<>(animalService.getOneAnimal(animalId), HttpStatus.OK);
+        } catch (AnimalNotFoundException e) {
+            return new ResponseEntity<>("Didn't find this animal", HttpStatus.NOT_FOUND);
+        }
+    }
 
     @PostMapping("/create")
     public ResponseEntity<Object> createAnimal(@Valid @RequestBody AnimalDTO animalDTO,

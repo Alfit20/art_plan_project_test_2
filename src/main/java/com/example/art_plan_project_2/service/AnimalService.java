@@ -3,19 +3,19 @@ package com.example.art_plan_project_2.service;
 import com.example.art_plan_project_2.dto.AnimalDTO;
 import com.example.art_plan_project_2.entity.Animal;
 import com.example.art_plan_project_2.entity.User;
+import com.example.art_plan_project_2.exception.AnimalNotFoundException;
 import com.example.art_plan_project_2.exception.AnimalWithThatNameAlreadyExists;
 import com.example.art_plan_project_2.repository.AnimalRepository;
 import com.example.art_plan_project_2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
+import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class AnimalService {
         if (checkAnimalName(animalDTO.getName())) {
             throw new AnimalWithThatNameAlreadyExists();
         }
-        log.info("Saving Animal {}", animalDTO);
+        log.info("Saving animal {}", animalDTO);
         return AnimalDTO.from(animalRepository.save(Animal.builder()
                 .dateOfBirth(animalDTO.getDateOfBirth())
                 .gender(animalDTO.getGender())
@@ -51,6 +51,7 @@ public class AnimalService {
         if (!user.equals(currentUser)) {
             throw new NoSuchElementException();
         }
+        log.info("Delete animal {}", animal);
         animalRepository.delete(animal);
     }
 
@@ -70,7 +71,18 @@ public class AnimalService {
         return AnimalDTO.from(animal);
     }
 
+    public List<AnimalDTO> getAnimals(User user) {
+        return animalRepository.findByUser(user).stream()
+                .map(AnimalDTO::from)
+                .collect(Collectors.toList());
+    }
+
     public boolean checkAnimalName(String name) {
         return animalRepository.existsByName(name);
+    }
+
+    public AnimalDTO getOneAnimal(Long animalId) {
+        return AnimalDTO.from(animalRepository.findById(animalId)
+                .orElseThrow(AnimalNotFoundException::new));
     }
 }

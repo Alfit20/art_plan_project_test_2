@@ -1,7 +1,6 @@
 package com.example.art_plan_project_2.dto;
 
 import com.example.art_plan_project_2.entity.Animal;
-import com.example.art_plan_project_2.entity.User;
 import com.example.art_plan_project_2.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -9,7 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
