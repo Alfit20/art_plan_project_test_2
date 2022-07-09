@@ -9,8 +9,6 @@ import com.example.art_plan_project_2.repository.AnimalRepository;
 import com.example.art_plan_project_2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,12 +35,6 @@ public class AnimalService {
                 .user(user)
                 .build()));
 
-    }
-
-    private User getUserByPrincipal(Authentication authentication) {
-        String login = authentication.getName();
-        return userRepository.findUserByLogin(login)
-                .orElseThrow(() -> new UsernameNotFoundException("Login not found with " + login));
     }
 
     public void deleteAnimal(Long animalId, User currentUser) {
